@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminsRequest;
 
 class AuthController extends ApiController
 {
@@ -13,13 +12,14 @@ class AuthController extends ApiController
     }
 
     /**
-     *  登陆
+     * @param AdminsRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(AdminsRequest $request)
     {
-        $credentials = \request(['account', 'password']);
+        $credentials = $request->only(['account', 'password']);
         if ($token = auth('api')->attempt($credentials)) {
-            $this->error('账户或密码错误');
+            $this->failed('账户或密码错误');
         }
 
         $this->setStatusCode(404)->setHeaders(['Authorization' => 'Bearer ' . $token])->success();

@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\Api\ExceptionReport;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -48,6 +49,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        $reporter = ExceptionReport::make($exception);
+
+        if ($reporter->shouldReturn()){
+            return $reporter->report();
+        }
         return parent::render($request, $exception);
     }
 }
