@@ -10,10 +10,12 @@ namespace App\Exceptions\Api;
 
 
 use App\Http\Controllers\Admin\ApiResponse;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ExceptionReport
 {
@@ -50,7 +52,8 @@ class ExceptionReport
     public $doReport = [
         AuthenticationException::class => ['未授权', 401],
         ModelNotFoundException::class => ['Not Found', 404],
-        ValidationException::class => ['Failed Validate', 200]
+        ValidationException::class => ['Failed Validate.', 200],
+        AuthorizationException::class => ['This action is unauthorized.', 401],
     ];
 
     /**
@@ -58,9 +61,9 @@ class ExceptionReport
      */
     public function shouldReturn()
     {
-        /*if (!($this->request->wantsJson() || $this->request->ajax())) {
+        if (!($this->request->wantsJson() || $this->request->ajax())) {
             return false;
-        }*/
+        }
         foreach (array_keys($this->doReport) as $report) {
             if ($this->exception instanceof $report) {
                 $this->report = $report;
@@ -78,7 +81,6 @@ class ExceptionReport
      */
     public static function make(\Exception $e)
     {
-
         return new static(\request(), $e);
     }
 
@@ -89,8 +91,7 @@ class ExceptionReport
     {
 
         $message = $this->doReport[$this->report];
-
-        return $this->failed($message[0], $this->exception->getMessage());
+        return $this->failed($message[0], $message[1]);
 
     }
 

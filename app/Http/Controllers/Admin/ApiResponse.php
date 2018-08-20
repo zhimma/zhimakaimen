@@ -18,9 +18,9 @@ trait ApiResponse
 
     public function send($status, array $data, $code = null)
     {
-        if (!$code) {
+        /*if (!$code) {
             $this->setStatusCode();
-        }
+        }*/
         $return = [
             'status' => $status,
             'code' => $this->getStatusCode()

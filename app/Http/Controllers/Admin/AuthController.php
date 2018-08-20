@@ -18,12 +18,11 @@ class AuthController extends ApiController
     public function login(AdminsRequest $request)
     {
         $credentials = $request->only(['account', 'password']);
-        if ($token = auth('api')->attempt($credentials)) {
-            $this->failed('账户或密码错误');
+        if (!$token = auth('api')->attempt($credentials)) {
+            return $this->failed('账户或密码错误');
         }
 
-        $this->setStatusCode(404)->setHeaders(['Authorization' => 'Bearer ' . $token])->success();
-        return $this->success('登陆成功');
+        return $this->setStatusCode(200)->setHeaders(['Authorization' => 'Bearer ' . $token])->success($token);
     }
 
     public function logout()
