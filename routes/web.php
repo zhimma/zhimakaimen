@@ -10,8 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::any('/wechat', 'Wechat\WechatController@server');
+//Route::any('/wechat', 'Wechat\WechatController@server');
 Route::group(['namespace' => 'Wechat' , 'prefix' => 'wechat'],function(){
+    Route::any( 'getWxUserInfo', 'WechatController@getWxUserInfo');
     Route::resource('user', 'UserController');
 });
 
