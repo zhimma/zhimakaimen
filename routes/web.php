@@ -10,7 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
+Route::any('/wechat', 'Wechat\WechatController@server');
+Route::group(['namespace' => 'Wechat' , 'prefix' => 'wechat'],function(){
+    Route::resource('user', 'UserController');
 });
+
