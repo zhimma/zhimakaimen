@@ -10,8 +10,20 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::group(['prefix' => 'auth', 'namespace' => 'Admin'], function () {
+/**
+ *
+ * Encryption keys generated successfully.
+ * Personal access client created successfully.
+ * Client ID: 1
+ * Client Secret: kHolVK37RrSGxkyiQW0VL7cyREOj1T6tZoturKHj
+ * Password grant client created successfully.
+ * Client ID: 2
+ * Client Secret: 6GmUKet2aDG0bBX8gsHTkmifnnrXXEf2uLYhTePk
+ */
+Route::group(['middleware' => 'api', 'prefix' => 'auth', 'namespace' => 'Api\Auth'], function ($router) {
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+    Route::post('register' , 'AuthController@register');
 });

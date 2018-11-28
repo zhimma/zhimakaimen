@@ -9,7 +9,7 @@
 namespace App\Exceptions\Api;
 
 
-use App\Http\Controllers\ApiResponse;
+use App\Http\Traits\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
