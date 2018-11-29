@@ -48,6 +48,6 @@ class AuthController extends BaseController
         $userData = $user->where(['open_id' => $userInfo->openId])->first();
         $token = auth('api')->login($userData);
 
-        return $this->setHeaders(['Token' => $token])->success();
+        return $this->setHeaders(['Token' => $token])->success($userData , "登录成功");
     }
 }
