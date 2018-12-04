@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Api\BaseController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseController
 {
@@ -24,7 +25,7 @@ class AuthController extends BaseController
     {
         $postData = $request->only(['code', 'encryptedData', 'iv']);
         $params = array_merge(["appid" => env('APP_ID'), "app_secret" => env('APP_SECRET')], $postData);
-        $url = vsprintf(self::JSCODE2SESSION, [$params['appid'] , $params['app_secret'] , $params['code']]);
+        $url = vsprintf(self::JSCODE2SESSION, [$params['appid'], $params['app_secret'], $params['code']]);
         $response = $this->request("GET", $url);
         if (isset($response['data']->errcode)) {
             return $this->failed($response['data']->errmsg);
@@ -48,6 +49,31 @@ class AuthController extends BaseController
         $userData = $user->where(['open_id' => $userInfo->openId])->first();
         $token = auth('api')->login($userData);
 
-        return $this->setHeaders(['Token' => $token])->success($userData , "登录成功");
+        return $this->setHeaders(['Token' => $token])->success($userData, "登录成功");
+    }
+
+    public function login(Request $request, User $user)
+    {
+        $code = $request->post('code');
+        $params = array_merge(["appid" => env('APP_ID'), "app_secret" => env('APP_SECRET')], ['code' => $code]);
+        $url = vsprintf(self::JSCODE2SESSION, [$params['appid'], $params['app_secret'], $params['code']]);
+        $response = $this->request("GET", $url);
+        if (isset($response['data']->errcode)) {
+            return $this->failed($response['data']->errmsg);
+
+        }
+        $sessionKey = $response['data']->session_key;
+        $openId = $response['data']->openid;
+        if (!$user->where(['open_id' => $openId])->first()) {
+            return $this->failed("not register", 200, 'error');
+        }
+        $userData = $user->where(['open_id' => $openId])->first();
+        $userData['token'] = auth('api')->login($userData);
+
+        return $this->success($userData, "success");
+    }
+    public function me()
+    {
+        return $this->success(Auth::guard('api')->user());
     }
 }

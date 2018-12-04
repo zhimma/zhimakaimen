@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RefreshToken;
 use App\Http\Middleware\WantJson;
 use App\Http\Middleware\WantJsonMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -62,5 +63,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'refresh.token' => RefreshToken::class,
     ];
 }
