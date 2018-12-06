@@ -36,7 +36,8 @@ class ExceptionReport
 
     /**
      * ExceptionReport constructor.
-     * @param Request $request
+     *
+     * @param Request   $request
      * @param Exception $exception
      */
     function __construct(Request $request, \Exception $exception)
@@ -49,10 +50,10 @@ class ExceptionReport
      * @var array
      */
     public $doReport = [
-        AuthenticationException::class => ['未授权', 401],
-        ModelNotFoundException::class => ['Not Found', 404],
-        ValidationException::class => ['Failed Validate.', 200],
-        AuthorizationException::class => ['This action is unauthorized.', 401],
+        AuthenticationException::class => ['未授权', 40002],
+        ModelNotFoundException::class  => ['Not Found', 404],
+        ValidationException::class     => ['Failed Validate.', 40035],
+        AuthorizationException::class  => ['This action is unauthorized.', 50001],
     ];
 
     /**
@@ -66,6 +67,7 @@ class ExceptionReport
         foreach (array_keys($this->doReport) as $report) {
             if ($this->exception instanceof $report) {
                 $this->report = $report;
+
                 return true;
             }
         }
@@ -76,6 +78,7 @@ class ExceptionReport
 
     /**
      * @param Exception $e
+     *
      * @return static
      */
     public static function make(\Exception $e)
@@ -88,9 +91,9 @@ class ExceptionReport
      */
     public function report()
     {
-
         $message = $this->doReport[$this->report];
-        return $this->failed($message[0], $message[1]);
+
+        return $this->failed($this->exception->getMessage() ?? $message[0], $message[1]);
 
     }
 

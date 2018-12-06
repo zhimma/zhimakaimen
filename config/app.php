@@ -177,7 +177,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Overtrue\LaravelWeChat\ServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
     ],
 

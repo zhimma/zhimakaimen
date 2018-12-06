@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,13 +37,13 @@ class AuthController extends BaseController
         // 查询数据库保存用户
         if (!$user->where(['open_id' => $userInfo->openId])->first()) {
             $user->create([
-                'open_id' => $userInfo->openId,
-                'union_id' => $userInfo->unionId,
-                'nick_name' => $userInfo->nickName,
-                'gender' => $userInfo->gender,
-                'city' => $userInfo->city,
-                'province' => $userInfo->province,
-                'country' => $userInfo->country,
+                'open_id'    => $userInfo->openId,
+                'union_id'   => $userInfo->unionId,
+                'nick_name'  => $userInfo->nickName,
+                'gender'     => $userInfo->gender,
+                'city'       => $userInfo->city,
+                'province'   => $userInfo->province,
+                'country'    => $userInfo->country,
                 'avatar_url' => $userInfo->avatarUrl,
             ]);
         }
@@ -54,24 +55,23 @@ class AuthController extends BaseController
 
     public function login(Request $request, User $user)
     {
-        $code = $request->post('code');
+        /*$code = $request->post('code');
         $params = array_merge(["appid" => env('APP_ID'), "app_secret" => env('APP_SECRET')], ['code' => $code]);
         $url = vsprintf(self::JSCODE2SESSION, [$params['appid'], $params['app_secret'], $params['code']]);
         $response = $this->request("GET", $url);
         if (isset($response['data']->errcode)) {
             return $this->failed($response['data']->errmsg);
-
         }
         $sessionKey = $response['data']->session_key;
         $openId = $response['data']->openid;
         if (!$user->where(['open_id' => $openId])->first()) {
-            return $this->failed("not register", 200, 'error');
-        }
+            throw new AuthenticationException('user not register');
+        }*/
+        $openId = 'oCvYQ0WsjF9XRWUUDAgeGUZ_xc5U';
         $userData = $user->where(['open_id' => $openId])->first();
-        $userData['token'] = auth('api')->login($userData);
-
-        return $this->success($userData, "success");
+        return $this->setHeaders(['Token' => auth('api')->login($userData)])->success($userData, "登录成功");
     }
+
     public function me()
     {
         return $this->success(Auth::guard('api')->user());

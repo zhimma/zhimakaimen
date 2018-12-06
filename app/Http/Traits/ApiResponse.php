@@ -8,24 +8,26 @@ trait ApiResponse
 {
 
     protected $statusCode = 200;
-    protected $headers = [];
+    protected $code       = 200;
+    protected $headers    = [];
 
     public function success($data = [], $status = 'success')
     {
-        return $this->send($status, compact('data'));
-
+        return $this->send($status, $this->code, compact('data'));
     }
 
-    public function send($status, array $data, $code = null)
+    public function send($status, $code, array $data)
     {
         /*if (!$code) {
             $this->setStatusCode();
         }*/
         $return = [
             'status' => $status,
-            'code' => $this->getStatusCode()
+//            'httpCode' => $this->getStatusCode(),
+            'code'   => $code,
         ];
         $sendData = array_merge($return, $data);
+
         return $this->respond($sendData);
 
     }
@@ -38,12 +40,14 @@ trait ApiResponse
     public function setStatusCode($code = 200)
     {
         $this->statusCode = $code;
+
         return $this;
     }
 
     public function setHeaders($headers = [])
     {
         $this->headers = $headers;
+
         return $this;
     }
 
@@ -60,11 +64,11 @@ trait ApiResponse
 
     public function failed($message, $code = Response::HTTP_BAD_REQUEST, $status = 'error')
     {
-        return $this->setStatusCode($code)->send($status, compact('message'));
+        return $this->send($status, $code, compact('message'));
     }
 
     public function notFound($message = 'Not Found')
     {
-        return $this->failed($message , Response::HTTP_NOT_FOUND);
+        return $this->failed($message, Response::HTTP_NOT_FOUND);
     }
 }

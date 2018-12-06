@@ -4,7 +4,6 @@ namespace App\Http;
 
 use App\Http\Middleware\RefreshToken;
 use App\Http\Middleware\WantJson;
-use App\Http\Middleware\WantJsonMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -42,10 +41,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            WantJson::class,
+            \Barryvdh\Cors\HandleCors::class,
             'throttle:60,1',
             'bindings',
-            \Barryvdh\Cors\HandleCors::class,
-            WantJson::class,
         ],
     ];
 
