@@ -14,5 +14,6 @@ Route::group(['namespace' => 'Api'], function () {
         Route::resource('banner', 'BannerController');
         Route::resource('module', 'ModuleController');
         Route::resource('plate', 'PlateController');
+        Route::resource('news', 'NewsController');
     });
 });

@@ -55,7 +55,7 @@ class AuthController extends BaseController
 
     public function login(Request $request, User $user)
     {
-        /*$code = $request->post('code');
+        $code = $request->post('code');
         $params = array_merge(["appid" => env('APP_ID'), "app_secret" => env('APP_SECRET')], ['code' => $code]);
         $url = vsprintf(self::JSCODE2SESSION, [$params['appid'], $params['app_secret'], $params['code']]);
         $response = $this->request("GET", $url);
@@ -66,8 +66,8 @@ class AuthController extends BaseController
         $openId = $response['data']->openid;
         if (!$user->where(['open_id' => $openId])->first()) {
             throw new AuthenticationException('user not register');
-        }*/
-        $openId = 'oCvYQ0WsjF9XRWUUDAgeGUZ_xc5U';
+        }
+        // $openId = 'oCvYQ0WsjF9XRWUUDAgeGUZ_xc5U';
         $userData = $user->where(['open_id' => $openId])->first();
         return $this->setHeaders(['Token' => auth('api')->login($userData)])->success($userData, "登录成功");
     }
